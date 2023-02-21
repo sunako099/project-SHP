@@ -52,7 +52,12 @@ export default {
         //点击搜索按钮，向search路由进行跳转
         goSearch() {
             //路由传参
-            this.$router.push({name:"search",params:{keyword:this.keyword},query:{k:this.keyword.toUpperCase()}})
+            //有query参数也带过去
+            if(this.$route.query){
+                let location={name:"search",params:{keyword:this.keyword||undefined}};
+                location.query=this.$route.query;
+                this.$router.push(location);
+            }
         }
     }
 }

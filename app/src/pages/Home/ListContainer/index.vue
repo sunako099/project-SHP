@@ -1,23 +1,13 @@
-<template>
-    <!--列表-->
+<template><!--列表-->
     <div class="list-container">
         <div class="sortList clearfix">
             <div class="center">
                 <!--banner轮播-->
                 <div class="swiper-container" id="mySwiper">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <img src="./images/banner1.jpg" />
+                        <div class="swiper-slide" v-for="(carousel,index) in bannerList" :key="carousel.id">
+                            <img :src="carousel.imgUrl" />
                         </div>
-                        <!-- <div class="swiper-slide">
-                            <img src="./images/banner2.jpg" />
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="./images/banner3.jpg" />
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="./images/banner4.jpg" />
-                        </div> -->
                     </div>
                     <!-- 如果需要分页器 -->
                     <div class="swiper-pagination"></div>
@@ -53,51 +43,51 @@
                     </ul>
                 </div>
                 <ul class="lifeservices">
-                    <li class=" life-item ">
+                    <li class="life-item ">
                         <i class="list-item"></i>
                         <span class="service-intro">话费</span>
                     </li>
-                    <li class=" life-item ">
+                    <li class="life-item ">
                         <i class="list-item"></i>
                         <span class="service-intro">机票</span>
                     </li>
-                    <li class=" life-item ">
+                    <li class="life-item ">
                         <i class="list-item"></i>
                         <span class="service-intro">电影票</span>
                     </li>
-                    <li class=" life-item ">
+                    <li class="life-item ">
                         <i class="list-item"></i>
                         <span class="service-intro">游戏</span>
                     </li>
-                    <li class=" life-item">
+                    <li class="life-item">
                         <i class="list-item"></i>
                         <span class="service-intro">彩票</span>
                     </li>
-                    <li class=" life-item">
+                    <li class="life-item">
                         <i class="list-item"></i>
                         <span class="service-intro">加油站</span>
                     </li>
-                    <li class=" life-item">
+                    <li class="life-item">
                         <i class="list-item"></i>
                         <span class="service-intro">酒店</span>
                     </li>
-                    <li class=" life-item">
+                    <li class="life-item">
                         <i class="list-item"></i>
                         <span class="service-intro">火车票</span>
                     </li>
-                    <li class=" life-item ">
+                    <li class="life-item ">
                         <i class="list-item"></i>
                         <span class="service-intro">众筹</span>
                     </li>
-                    <li class=" life-item">
+                    <li class="life-item">
                         <i class="list-item"></i>
                         <span class="service-intro">理财</span>
                     </li>
-                    <li class=" life-item">
+                    <li class="life-item">
                         <i class="list-item"></i>
                         <span class="service-intro">礼品卡</span>
                     </li>
-                    <li class=" life-item">
+                    <li class="life-item">
                         <i class="list-item"></i>
                         <span class="service-intro">白条</span>
                     </li>
@@ -111,8 +101,41 @@
 </template>
 
 <script>
+import Swiper from 'swiper';
+import { mapState } from 'vuex';
+
 export default {
-name:'ListContainer'
+    name: 'ListContainer',
+    mounted(){
+        this.$store.dispatch('BannerList');
+        
+    },
+    computed:{
+        ...mapState({
+            bannerList:(state)=>{return state.home.BannerList}
+        })
+    },
+    watch:{
+        bannerList(newValue,oldValue){
+            this.$nextTick(()=>{
+                let mySwiper = new Swiper(document.getElementsByClassName("swiper-container"),{
+                    pagination:{
+                el: '.swiper-pagination',
+                clickable: true,
+                },
+                // 如果需要前进后退按钮
+                navigation: {
+                        nextEl: '.swiper-button-next',
+                         prevEl: '.swiper-button-prev',
+                 },
+                // 如果需要滚动条
+                scrollbar: {
+                         el: '.swiper-scrollbar',
+                },
+            })
+        })
+    }
+  }
 }
 </script>
 
@@ -176,7 +199,7 @@ name:'ListContainer'
                 display: flex;
                 flex-wrap: wrap;
 
-
+                .life-item{
                 border-left: 1px solid #e4e4e4;
                 border-bottom: 1px solid #e4e4e4;
                 margin-right: -1px;
@@ -185,6 +208,7 @@ name:'ListContainer'
                 position: relative;
                 cursor: pointer;
                 width: 25%;
+
 
                 .list-item {
                     background-image: url(./images/icons.png);
@@ -197,6 +221,7 @@ name:'ListContainer'
                     line-height: 22px;
                     width: 60px;
                     display: block;
+
                 }
 
                 &:nth-child(1) {
@@ -286,5 +311,6 @@ name:'ListContainer'
             }
         }
     }
+}
 }
 </style>

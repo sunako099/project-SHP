@@ -8,12 +8,19 @@ Vue.component(TypeNav.name,TypeNav)
 Vue.config.productionTip = false
 
 //引入路由
-import router from '@/router'
+// 在main.js注册路由，所有的路由和非路由组件身上都会拥有$router $route属性
+// $router：一般进行编程式导航进行路由跳转
+// $route： 一般获取路由信息（name path params等）
+import router from '@/router';
 //引入仓库
-import store from '@/store'
+import store from '@/store';
 
-import { reqCategoryList } from '@/api/index'
-reqCategoryList();
+// import { reqCategoryList } from '@/api/index'
+// reqCategoryList();
+
+import '@/mock/mockServe';
+
+import "swiper/css/swiper.css";
 
 new Vue({
   render: h => h(App),

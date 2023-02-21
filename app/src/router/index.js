@@ -34,7 +34,7 @@ export default new VueRouter({
     routes:[
         {
             path:"/home",
-            component:Home,
+            component:Home, 
             meta:{show:true}
         },
         {
@@ -48,7 +48,7 @@ export default new VueRouter({
             meta:{show:false}
         },
         {
-            path:"/search/:keyword",
+            path:"/search/:keyword?",
             component:Search,
             meta:{show:true},
             name:"search"

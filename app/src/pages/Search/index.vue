@@ -1,13 +1,12 @@
 <template>
   <div>
-    <h1>params参数xxxx{{ $route.params.keyword }}</h1>
-    <h1>query参数xxx{{ $route.query.k }}</h1>
+    <TypeNav/>
   </div>
 </template>
 
 <script>
 export default {
-
+  name:"",
 }
 </script>
 

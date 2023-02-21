@@ -1,33 +1,40 @@
-<template>
-    <!-- 商品分类导航 -->
+<template><!-- 商品分类导航 -->
     <div class="type-nav">
         <div class="container">
-            <div @mouseleave="leaveIndex">
+            <!-- 事件代理 -->
+            <div @mouseleave="leaveShow" @mouseenter="enterShow">
                 <h2 class="all">全部商品分类</h2>
-                <div class="sort">
-                    <div class="all-sort-list2">
-                        <div class="item" v-for="(c1, index) in categoryList.slice(0, 16)" :key="c1.categoryId"
-                            :class="{ cur: currentIndex == index }">
-                            <h3 @mouseenter="changeIndex(index)">
-                                <a href="">{{ c1.categoryName }}</a>
-                            </h3>
-                            <div class="item-list clearfix" :style="{display:currentIndex==index?'block':'none'}">
-                                <div class="subitem" v-for="(c2, index) in c1.categoryChild" :key="c2.categoryId">
-                                    <dl class="fore">
-                                        <dt>
-                                            <a href="">{{ c2.categoryName }}</a>
-                                        </dt>
-                                        <dd>
-                                            <em v-for="(c3, index) in c2.categoryChild" :key="c3.categoryId">
-                                                <a href="">{{ c3.categoryName }}</a>
-                                            </em>
-                                        </dd>
-                                    </dl>
+                <!-- 过渡动画 -->
+                <transition name="sort">
+                    <!-- 三级联动 -->
+                    <div class="sort" v-show="show">
+                        <div class="all-sort-list2" @click="goSearch">
+                            <div class="item" v-for="(c1, index) in categoryList.slice(0, 16)" :key="c1.categoryId"
+                                :class="{ cur: currentIndex == index }">
+                                <h3 @mouseenter="changeIndex(index)">
+                                    <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{
+                                        c1.categoryName }}</a>
+                                </h3>
+                                <div class="item-list clearfix" :style="{ display: currentIndex == index ? 'block' : 'none' }">
+                                    <div class="subitem" v-for="(c2, index) in c1.categoryChild" :key="c2.categoryId">
+                                        <dl class="fore">
+                                            <dt>
+                                                <a :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{
+                                                    c2.categoryName }}</a>
+                                            </dt>
+                                            <dd>
+                                                <em v-for="(c3, index) in c2.categoryChild" :key="c3.categoryId">
+                                                    <a :data-categoryName="c3.categoryName"
+                                                        :data-category3Id="c3.categoryId">{{ c3.categoryName }}</a>
+                                                </em>
+                                            </dd>
+                                        </dl>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </transition>
             </div>
             <nav class="nav">
                 <a href="###">服装城</a>
@@ -50,12 +57,17 @@ export default {
     name: "TypeNav",
     data() {
         return {
-            currentIndex: -1
+            currentIndex: -1,
+            show: true
         }
     },
-    //组件挂载完毕，可以向服务器发请求
+    
     mounted() {
-        this.$store.dispatch('categoryList')
+        
+        //若路由组件不是home，隐藏typeNav
+        if (this.$route.path != '/home') {
+            this.show = false
+        }
     },
     computed: {
         ...mapState({
@@ -65,12 +77,47 @@ export default {
         })
     },
     methods: {
-        changeIndex:throttle(function(index){
+        //throttle为lodash方法，节流。
+        // 将changeIndex设置了节流，如果操作很频繁，限制50ms执行一次。
+        // 这里函数定义采用的键值对形式。
+        // throttle的返回值就是一个函数，所以直接键值对赋值就可以，函数的参数在function中传入即可。
+        changeIndex: throttle(function (index) {
             this.currentIndex = index
-        },50),
-        leaveIndex() {
-            this.currentIndex = -1
-        }
+        }, 50),
+        goSearch(event) {
+            let element = event.target;
+            let { categoryname, category1id, category2id, category3id } = element.dataset;
+            if (categoryname) {
+                let location = { name: "search" }
+                let query = { categoryName: categoryname }
+                if (category1id) {
+                    query.category1Id = category1id
+                }
+                else if (category2id) {
+                    query.category2Id = category2id
+                }
+                else {
+                    query.category3Id = category3id
+                }
+                //判断：路由跳转时若带有params参数，一起传过去
+                if(this.$route.params){
+                    location.params=this.$route.params;
+                    location.query = query;
+                    this.$router.push(location)
+                }
+            }
+        },
+        enterShow() {
+            if (this.$route.path != '/home') {
+                this.show = true;
+            }
+        },
+        leaveShow() {
+            this.currentIndex = -1;
+            if (this.$route.path != '/home') {
+                this.show = false;
+            }
+        },
     }
 }
 </script>
@@ -94,6 +141,8 @@ export default {
             color: #fff;
             font-size: 14px;
             font-weight: bold;
+            cursor: pointer;
+
         }
 
         .nav {
@@ -116,8 +165,10 @@ export default {
             background: #fafafa;
             z-index: 999;
 
+
             .all-sort-list2 {
                 .item {
+
                     h3 {
                         line-height: 30px;
                         font-size: 14px;
@@ -125,6 +176,8 @@ export default {
                         overflow: hidden;
                         padding: 0 20px;
                         margin: 0;
+                        cursor: pointer;
+
 
                         a {
                             color: #333;
@@ -142,10 +195,14 @@ export default {
                         top: 0;
                         z-index: 9999 !important;
 
+
+
+
                         .subitem {
                             float: left;
                             width: 650px;
                             padding: 0 4px 0 8px;
+                            cursor: pointer;
 
                             dl {
                                 border-top: 1px solid #eee;
@@ -190,6 +247,33 @@ export default {
                     background: skyblue;
                 }
             }
+        }
+
+        //过渡动画
+        .sort-enter{
+            height: 0px;
+        }
+
+        .sort-enter-to{
+            height: 461px;
+        }
+
+        .sort-enter-active{
+            transition: all .5s linear;
+            overflow: hidden;
+        }
+
+        .sort-leave-to{
+            height: 0px;
+        }
+
+        .sort-leave-from{
+            height: 461px;
+        }
+
+        .sort-leave-active{
+            transition: all .3s linear;
+            overflow: hidden;
         }
     }
 }

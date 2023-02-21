@@ -16,6 +16,10 @@ export default {
   name: 'App',
   components: {
     Header,Footer
+  },
+  mounted(){
+    //组件挂载完毕，可以向服务器发请求获取三级联动
+    this.$store.dispatch('categoryList');
   }
 }
 </script>
