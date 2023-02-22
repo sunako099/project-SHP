@@ -21,9 +21,16 @@ import store from '@/store';
 import '@/mock/mockServe';
 
 import "swiper/css/swiper.css";
+//注册轮播图为全局组件
+import Carousel from '@/components/Carousel';
+Vue.component(Carousel.name,Carousel);
 
 new Vue({
   render: h => h(App),
+  //全局事件总线$bus配置
+  beforeCreate(){
+    Vue.prototype.$bus=this;
+  },
   //注册路由,组件身上都会有$route,$router
   router,
   //注册仓库，组件身上都会有$store
