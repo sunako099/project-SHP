@@ -14,11 +14,12 @@
             <li class="with-x" v-if="searchParams.categoryName">{{ searchParams.categoryName }}<i @click="removeCategoryName">×</i></li>
             <li class="with-x" v-if="searchParams.keyword">{{ searchParams.keyword }}<i @click="removeKeyword">×</i></li>
             <li class="with-x" v-if="searchParams.trademark">{{ searchParams.trademark.split(":")[1]}}<i @click="removeTrademark">×</i></li>
+            <li class="with-x" v-for="(attrValue,index) in searchParams.props" :key="index">{{ attrValue.split(":")[1]}}<i @click="removeAttr(index)">×</i></li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector @trademarkInfo="trademarkInfo"/>
+        <SearchSelector @trademarkInfo="trademarkInfo" @attrInfo="attrInfo"/>
 
         <!--details-->
         <div class="details clearfix">
@@ -179,6 +180,19 @@ export default {
     },
     removeTrademark(){
       this.searchParams.trademark=undefined;
+      this.getData();
+    },
+    attrInfo(attr,attrValue){
+      //['属性ID：属性值：属性名']
+      let props=`${attr.attrId}:${attrValue}:${attr.attrName}`;
+      //数组去重
+      if(this.searchParams.props.indexOf(props)==-1){
+        this.searchParams.props.push(props);
+      }
+      this.getData();
+    },
+    removeAttr(index){
+      this.searchParams.props.splice(index,1);
       this.getData();
     }
   },
@@ -353,7 +367,7 @@ export default {
                   font-weight: 700;
 
                   i {
-                    margin-left: -5px;
+                    margin-left: 3px;
                   }
                 }
               }
