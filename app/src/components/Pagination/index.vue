@@ -1,12 +1,12 @@
 <template>
     <div class="pagination">
       <!-- 上面部分 -->
-      <button :disabled="pageNo == 1" @click="$dispatch('getPageNo', pageNo - 1)">
+      <button :disabled="pageNo == 1" @click="$emit('getPageNo', pageNo - 1)">
         上一页
       </button>
       <button
         v-show="startNumAndEndNumber.start > 1"
-        @click="$dispatch('getPageNo', 1)"
+        @click="$emit('getPageNo', 1)"
         :class="{ active: pageNo == 1 }"
       >
         1
@@ -17,7 +17,7 @@
         v-for="(page, index) in startNumAndEndNumber.end"
         :key="index"
         v-show="page >= startNumAndEndNumber.start"
-        @click="$dispatch('getPageNo', page)"
+        @click="$emit('getPageNo', page)"
         :class="{ active: pageNo == page }"
       >
         {{ page }}
@@ -26,12 +26,12 @@
       <button v-show="startNumAndEndNumber.end < totalPage - 1">···</button>
       <button
         v-show="startNumAndEndNumber.end < totalPage"
-            @click="$dispatch('getPageNo', totalPage)"
+            @click="$emit('getPageNo', totalPage)"
         :class="{ active: pageNo == totalPage }"
       >
-        {{ totalPage }}
+        {{totalPage}}
       </button>
-      <button @click="$dispatch('getPageNo', pageNo + 1)">下一页</button>
+      <button :disabled="pageNo==totalPage" @click="$emit('getPageNo', pageNo + 1)">下一页</button>
       <button style="margin-left: 30px">共 {{ total }} 条</button>
     </div>
   </template>
@@ -39,7 +39,33 @@
   <script>
   export default {
     name: "Pagination",
-    
+    props:['pageNo','pageSize','total','continues'],
+    computed:{
+      totalPage(){
+        return Math.ceil(this.total/this.pageSize);
+      },
+      startNumAndEndNumber(){
+        //解构赋值
+        const{continues,pageNo,totalPage}=this;
+        let start=0,end=0;
+        if(continues>totalPage){
+          start=1;
+          end=totalPage;
+        }else{
+          start=pageNo-parseInt(continues/2);
+          end=pageNo+parseInt(continues/2);
+          if(start<1){
+            start=1;
+            end=continues;
+          }
+          if(end>totalPage){
+            end=totalPage;
+            start=totalPage-continues+1;
+          }
+        }
+        return {start,end};
+      }
+    }
   };
   </script>
   

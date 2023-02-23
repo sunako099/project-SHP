@@ -12,3 +12,7 @@ export const reqFloorList=()=>{
 }
 //当前接口给服务器传递参数params，至少是一个空对象
 export const reqGetSearchInfo=(params)=>requests({url:"/list",method:"post",data:params})
+
+export const reqGoodsInfo=(skuId)=>{
+    return requests({url:`/item/${skuId}`,method:'get'})
+}

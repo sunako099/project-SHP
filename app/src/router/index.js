@@ -10,6 +10,7 @@ import Home from '@/pages/Home'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 import Search from '@/pages/Search'
+import Detail from '@/pages/Detail'
 
 //重写push和replace
 let originPush=VueRouter.prototype.push
@@ -53,10 +54,19 @@ export default new VueRouter({
             meta:{show:true},
             name:"search"
         },
+        {
+            path:"/detail/:skuid",
+            component:Detail, 
+            meta:{show:true}
+        },
         //重定向
         {
             path:'*',
             redirect:"/home"
         }
-    ]
+    ],
+    //滚动行为
+    scrollBehavior(to,from,savedPosition){
+        return {y:0}
+    }
 })
