@@ -4,8 +4,13 @@ import App from './App.vue'
 import TypeNav from '@/components/TypeNav'
 //第一个参数：全局组件的名字，第二个参数：哪一个组件
 Vue.component(TypeNav.name,TypeNav)
-
 Vue.config.productionTip = false
+//注册轮播图为全局组件
+import Carousel from '@/components/Carousel';
+Vue.component(Carousel.name,Carousel);
+//定义分页器为全局组件
+import Pagination from '@/components/Pagination';
+Vue.component(Pagination.name,Pagination);
 
 //引入路由
 // 在main.js注册路由，所有的路由和非路由组件身上都会拥有$router $route属性
@@ -21,9 +26,7 @@ import store from '@/store';
 import '@/mock/mockServe';
 
 import "swiper/css/swiper.css";
-//注册轮播图为全局组件
-import Carousel from '@/components/Carousel';
-Vue.component(Carousel.name,Carousel);
+
 
 new Vue({
   render: h => h(App),
