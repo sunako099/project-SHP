@@ -11,6 +11,8 @@ import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 import Search from '@/pages/Search'
 import Detail from '@/pages/Detail'
+import AddCartSuccess from '@/pages/AddCartSuccess'
+import ShopCart from '@/pages/ShopCart'
 
 //重写push和replace
 let originPush=VueRouter.prototype.push
@@ -57,6 +59,17 @@ export default new VueRouter({
         {
             path:"/detail/:skuid",
             component:Detail, 
+            meta:{show:true}
+        },
+        {
+            path:"/addCartSuccess",
+            component:AddCartSuccess, 
+            name:'addCartSuccess',
+            meta:{show:true}
+        },
+        {
+            path:"/shopcart",
+            component:ShopCart, 
             meta:{show:true}
         },
         //重定向
