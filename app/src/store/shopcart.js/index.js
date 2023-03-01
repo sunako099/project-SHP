@@ -1,4 +1,4 @@
-import { reqCartList} from "@/api"
+import { reqCartList,reqDeleteCartById,reqUpdateCheckedById} from "@/api"
 //state:仓库存储数据的地方
 const state={
     cartList:[]
@@ -16,7 +16,39 @@ const actions={
         if(result.code==200){
             commit("GETCARTLIST",result.data);
         }
-    }
+    },
+    async deleteCartListBySkuId({commit},skuId){
+        let result=await reqDeleteCartById(skuId);
+        if(result.code==200){
+            return 'ok';
+        }else{
+            return Promise.reject(new Error('fail'));
+        }
+    },
+    async updateCheckedById({commit},{skuId,isChecked}){
+        let result=await reqUpdateCheckedById(skuId,isChecked);
+        if(result.code==200){
+            return 'ok';
+        }else{
+            return Promise.reject(new Error('fail'));
+        }
+    },
+    deleteAllCheckedCart({dispatch,getters}){
+        let PromiseAll=[];
+        getters.cartList.cartInfoList.forEach(item=>{
+            let Promise= item.isChecked==1?dispatch('deleteCartListBySkuId',item.skuId):'';
+            PromiseAll.push(Promise);
+        })
+    },
+    updateAllCartIsChecked({dispatch,state},isChecked){
+        
+        let PromiseAll=[];
+        state.cartList[0].cartInfoList.forEach(item=>{
+            let Promise= dispatch('updateCheckedById',{skuId:item.skuId,isChecked});
+            PromiseAll.push(Promise);
+        });
+        return Promise.all(PromiseAll);
+    },
 }
 //getters：理解为计算属性，用于简化仓库数据，让组件获取仓库的数据更加方便
 const getters={

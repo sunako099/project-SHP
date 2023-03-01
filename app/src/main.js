@@ -27,12 +27,28 @@ import '@/mock/mockServe';
 
 import "swiper/css/swiper.css";
 
+import * as API from '@/api'
+import tu from '@/assets/1.jpg'
+
+import "@/plugin/validate"
+
+import { Button,MessageBox } from 'element-ui'
+Vue.component(Button.name,Button)
+Vue.prototype.$messgebox = MessageBox
+Vue.prototype.$alert = MessageBox.alert
+
+import VueLazyload from 'vue-lazyload'
+Vue.use(VueLazyload,{
+  loading:tu
+})
+
 
 new Vue({
   render: h => h(App),
   //全局事件总线$bus配置
   beforeCreate(){
     Vue.prototype.$bus=this;
+    Vue.prototype.$API=API;
   },
   //注册路由,组件身上都会有$route,$router
   router,
